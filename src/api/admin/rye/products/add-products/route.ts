@@ -54,6 +54,7 @@ export async function POST(
     const results = await Promise.all(productPromises);
     const medusaProductProms: ResponsePromise<AdminProductsRes>[] = [];
     for (const result of results) {
+      console.log(result.data.productByID);
       if (result.data.productByID.isAvailable) {
         medusaProductProms.push(
           medusaClient.admin.products.create({
