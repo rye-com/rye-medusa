@@ -4,7 +4,7 @@
 1. Create a `.env` file and add the below contents
 ```
 DATABASE_TYPE=postgres
-DATABASE_URL=postgres://postgres:2234781@localhost/medusa-store
+DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@localhost/medusa-store
 MEDUSA_ADMIN_ONBOARDING_TYPE=nextjs
 STORE_CORS=http://localhost:8000,http://localhost:7001
 MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY=rye-medusa-storefront
