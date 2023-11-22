@@ -17,6 +17,15 @@ export async function POST(
     const productUrls: { url: string; marketplace: "AMAZON" | "SHOPIFY" }[] =
       req.body.productUrls;
 
+      const marginData = req.body.margin ?? {unit: 'percent', value: 0};
+      let margin = 0;
+      const isMarginPercent = marginData.unit === 'percent';
+      if(marginData.unit === 'percent'){
+        margin = marginData.value / 100;
+      } else {
+        margin = marginData.value;
+      }
+
     const productRequests: Promise<OperationResult<any, AnyVariables>>[] = [];
     for (const { url, marketplace } of productUrls) {
       productRequests.push(
@@ -56,6 +65,12 @@ export async function POST(
     for (const result of results) {
       console.log(result.data.productByID);
       if (result.data.productByID.isAvailable) {
+        let priceWithMargin = result.data.productByID.price.value + margin 
+        if(isMarginPercent){
+          const marginAmount = result.data.productByID.price.value * margin;
+          priceWithMargin =  result.data.productByID.price.value + marginAmount;
+        }
+
         medusaProductProms.push(
           medusaClient.admin.products.create({
             title: result.data.productByID.title,
@@ -78,7 +93,7 @@ export async function POST(
                 prices: [
                   {
                     currency_code: result.data.productByID.price.currency,
-                    amount: result.data.productByID.price.value,
+                    amount: priceWithMargin,
                   },
                 ],
               },
